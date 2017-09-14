@@ -34,7 +34,7 @@ from .tools import element_repr
 # __repr__ method is changed to our custom, pretty-printing one. This
 # allows things like Element.find("general") to return something more
 # useful than just the tag name when not assigned.
-ElementTree.Element.__repr__ = element_repr
+#ElementTree.Element.__repr__ = element_repr
 
 
 class SearchCriteria(ElementTree.Element):

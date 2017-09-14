@@ -254,7 +254,7 @@ class JSSPrefs(object):
             prefs_file.write("</plist>")
 
 
-def _get_user_input(prompt, key_name, parent, input_func=raw_input):
+def _get_user_input(prompt, key_name, parent, input_func=input):
     """Prompt the user for a value, and assign it to key_name."""
     val = input_func(prompt)
     ElementTree.SubElement(parent, "key").text = key_name
