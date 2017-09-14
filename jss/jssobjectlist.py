@@ -58,7 +58,7 @@ class JSSListData(MutableMapping):
         for key, val in list(self.store.items()):
             output.append("{:>{max_key}}: {:>{max_val}}".format(
                 key, val, max_key=max_key_width, max_val=max_val_width))
-        return "\n".join(output).encode("utf-8")
+        return "\n".join(output)
 
     @property
     def id(self):   # pylint: disable=invalid-name
@@ -133,7 +133,7 @@ class JSSObjectList(list):
                         key, val, max_key=max_key_width,
                         max_val=max_val_width))
                 output.append(delimeter)
-            return "\n".join(output).encode("utf-8")
+            return "\n".join(output)
         else:
             output = []
             for item in self:
