@@ -19,7 +19,7 @@ Base Classes representing JSS database objects and their API endpoints
 """
 
 
-import cPickle
+import pickle
 import os
 from xml.etree import ElementTree
 
@@ -142,7 +142,7 @@ class JSSObject(ElementTree.Element):
                 method.
         """
         self.jss = jss
-        if isinstance(data, basestring):
+        if isinstance(data, str):
             super(JSSObject, self).__init__(tag=self.list_type)
             self._new(data, **kwargs)
         elif isinstance(data, ElementTree.Element):
@@ -184,7 +184,7 @@ class JSSObject(ElementTree.Element):
         else:
             ElementTree.SubElement(self, "name").text = name
 
-        for item in self.data_keys.items():
+        for item in list(self.data_keys.items()):
             self._set_xml_from_keys(self, item, **kwargs)
 
     def _set_xml_from_keys(self, root, item, **kwargs):
@@ -209,7 +209,7 @@ class JSSObject(ElementTree.Element):
             target_key = ElementTree.SubElement(root, key)
 
         if isinstance(val, dict):
-            for dict_item in val.items():
+            for dict_item in list(val.items()):
                 self._set_xml_from_keys(target_key, dict_item, **kwargs)
             return
 
@@ -258,7 +258,7 @@ class JSSObject(ElementTree.Element):
             return "%s%s%s" % (cls._url, cls.id_url, data)
         elif data is None:
             return cls._url
-        elif isinstance(data, basestring):
+        elif isinstance(data, str):
             if "=" in data:
                 key, value = data.split("=")   # pylint: disable=no-member
                 if key in cls.search_types:
@@ -401,7 +401,7 @@ class JSSObject(ElementTree.Element):
             "true"/"True"/"TRUE"; all other strings are False).
         """
         element = self._handle_location(location)
-        if isinstance(value, basestring):
+        if isinstance(value, str):
             value = True if value.upper() == "TRUE" else False
         elif not isinstance(value, bool):
             raise ValueError
@@ -444,7 +444,7 @@ class JSSObject(ElementTree.Element):
         if isinstance(obj, JSSObject):
             results = [item for item in list_element.getchildren() if
                        item.findtext("id") == obj.id]
-        elif isinstance(obj, (int, basestring)):
+        elif isinstance(obj, (int, str)):
             results = [item for item in list_element.getchildren() if
                        item.findtext("id") == str(obj) or
                        item.findtext("name") == obj]
@@ -518,7 +518,7 @@ class JSSObject(ElementTree.Element):
                 Path will have ~ expanded prior to opening.
         """
         with open(os.path.expanduser(path), "wb") as pickle:
-            cPickle.Pickler(pickle, cPickle.HIGHEST_PROTOCOL).dump(self)
+            pickle.Pickler(pickle, pickle.HIGHEST_PROTOCOL).dump(self)
 
     @classmethod
     def from_pickle(cls, path):
@@ -534,7 +534,7 @@ class JSSObject(ElementTree.Element):
                 Path will have ~ expanded prior to opening.
         """
         with open(os.path.expanduser(path), "rb") as pickle:
-            return cPickle.Unpickler(pickle).load()
+            return pickle.Unpickler(pickle).load()
 
 
 class JSSContainerObject(JSSObject):

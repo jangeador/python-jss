@@ -25,7 +25,7 @@ import re
 import shutil
 import socket
 import subprocess
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 from . import casper
 from .exceptions import JSSError, JSSUnsupportedFileType
@@ -85,7 +85,7 @@ class Repository(object):
         output = ["Distribution Point: %s" % self.connection["url"]]
         output.append("Type: %s" % type(self))
         output.append("Connection Information:")
-        for key, val in self.connection.items():
+        for key, val in list(self.connection.items()):
             output.append("\t%s: %s" % (key, val))
 
         return "\n".join(output) + "\n"
@@ -127,7 +127,7 @@ class FileRepository(Repository):
             id_: Int ID, used _only_ for migrated repos. Default is -1,
                 which creates a new Script.
         """
-        if ("jss" in self.connection.keys() and
+        if ("jss" in list(self.connection.keys()) and
                 self.connection["jss"].jss_migrated):
             self._copy_script_migrated(filename, id_, SCRIPT_FILE_TYPE)
         else:
@@ -331,8 +331,8 @@ class MountedRepository(FileRepository):
                 if mount_point:
                     self.connection["mount_point"] = mount_point
                     if self.connection["jss"].verbose:
-                        print ("%s is already mounted at %s.\n" %
-                               (self.connection["url"], mount_point))
+                        print(("%s is already mounted at %s.\n" %
+                               (self.connection["url"], mount_point)))
 
                 # We found the share, no need to continue.
                 break
@@ -365,7 +365,7 @@ class MountedRepository(FileRepository):
         results = set()
         join = os.path.join
         url = self.connection["url"]
-        share_name = urllib.quote(self.connection["share_name"],
+        share_name = urllib.parse.quote(self.connection["share_name"],
                                   safe="~()*!.'")
         port = self.connection["port"]
 
@@ -441,7 +441,7 @@ class MountedRepository(FileRepository):
     @property
     def _encoded_password(self):
         """Returns the safely url-quoted password for this DP."""
-        return urllib.quote(self.connection["password"], safe="~()*!.'")
+        return urllib.parse.quote(self.connection["password"], safe="~()*!.'")
 
 
 class AFPDistributionPoint(MountedRepository):
@@ -500,7 +500,7 @@ class AFPDistributionPoint(MountedRepository):
         # mount_afp "afp://scraig:<password>@address/share" <mnt_point>
         if is_osx():
             if self.connection["jss"].verbose:
-                print self.connection["mount_url"]
+                print(self.connection["mount_url"])
             if mount_share:
                 self.connection["mount_point"] = mount_share(
                     self.connection["mount_url"])
@@ -510,14 +510,14 @@ class AFPDistributionPoint(MountedRepository):
                         self.connection["mount_url"],
                         self.connection["mount_point"]]
                 if self.connection["jss"].verbose:
-                    print " ".join(args)
+                    print(" ".join(args))
                 subprocess.check_call(args)
         elif is_linux():
             args = ["mount_afp", "-t", self.protocol,
                     self.connection["mount_url"],
                     self.connection["mount_point"]]
             if self.connection["jss"].verbose:
-                print " ".join(args)
+                print(" ".join(args))
             subprocess.check_call(args)
         else:
             raise JSSError("Unsupported OS.")
@@ -589,7 +589,7 @@ class SMBDistributionPoint(MountedRepository):
             if mount_share:
                 mount_url = "smb:%s" % self.connection["mount_url"]
                 if self.connection["jss"].verbose:
-                    print mount_url
+                    print(mount_url)
                 self.connection["mount_point"] = mount_share(mount_url)
             else:
                 # Non-Apple OS X python:
@@ -597,7 +597,7 @@ class SMBDistributionPoint(MountedRepository):
                         self.connection["mount_url"],
                         self.connection["mount_point"]]
                 if self.connection["jss"].verbose:
-                    print " ".join(args)
+                    print(" ".join(args))
                 subprocess.check_call(args)
         elif is_linux():
             args = ["mount", "-t", "cifs", "-o",
@@ -608,7 +608,7 @@ class SMBDistributionPoint(MountedRepository):
                                  self.connection["share_name"]),
                     self.connection["mount_point"]]
             if self.connection["jss"].verbose:
-                print " ".join(args)
+                print(" ".join(args))
             subprocess.check_call(args)
         else:
             raise JSSError("Unsupported OS.")
@@ -687,7 +687,7 @@ class DistributionServer(Repository):
         response = self.connection["jss"].session.post(
             url=self.connection["upload_url"], data=resource, headers=headers)
         if self.connection["jss"].verbose:
-            print response
+            print(response)
 
     def delete_with_casper_admin_save(self, pkg):
         """Delete a pkg from the distribution server.

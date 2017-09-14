@@ -22,7 +22,7 @@ removed. Do not rely on its continued existence!
 """
 
 
-import urllib
+import urllib.request, urllib.parse, urllib.error
 from xml.etree import ElementTree
 
 from .tools import element_repr
@@ -52,7 +52,7 @@ class Casper(ElementTree.Element):
         """
         self.jss = jss
         self.url = "%s/casper.jxml" % self.jss.base_url
-        self.auth = urllib.urlencode({"username": self.jss.user,
+        self.auth = urllib.parse.urlencode({"username": self.jss.user,
                                       "password": self.jss.password})
         super(Casper, self).__init__(tag="Casper")
         self.update()

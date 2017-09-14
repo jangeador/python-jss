@@ -32,7 +32,7 @@ try:
     from jss.contrib import FoundationPlist
 except ImportError as e:
     if os.uname()[0] == 'Darwin':
-        print("Warning: Import of FoundationPlist failed: %s" % e)
+        print(("Warning: Import of FoundationPlist failed: %s" % e))
         print("See README for information on this issue.")
     import plistlib
 

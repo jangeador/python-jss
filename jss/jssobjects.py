@@ -146,7 +146,7 @@ class CommandFlush(JSSObject):
         Raises:
             JSSDeleteError if provided url_path has a >= 400 response.
         """
-        if not isinstance(data, basestring):
+        if not isinstance(data, str):
             data = ElementTree.tostring(data)
         response = self.delete(data)
 
@@ -450,8 +450,8 @@ class FileUpload(object):
 
         if response.status_code == 201:
             if self.jss.verbose:
-                print "POST: Success"
-                print response.text.encode("utf-8")
+                print("POST: Success")
+                print(response.text.encode("utf-8"))
         elif response.status_code >= 400:
             error_handler(JSSPostError, response)
 
@@ -653,7 +653,7 @@ class LogFlush(JSSObject):
         Raises:
             JSSDeleteError if provided url_path has a >= 400 response.
         """
-        if not isinstance(data, basestring):
+        if not isinstance(data, str):
             data = ElementTree.tostring(data)
         response = self.delete(data)
 
@@ -1109,7 +1109,7 @@ class Policy(JSSContainerObject):
             id_ = ElementTree.SubElement(pcategory, "id")
             id_.text = category.id
             name.text = category.name
-        elif isinstance(category, basestring):
+        elif isinstance(category, str):
             name.text = category
 
 # pylint: enable=too-many-instance-attributes, too-many-locals

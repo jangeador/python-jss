@@ -21,7 +21,7 @@ JSS.
 
 
 from collections import MutableMapping
-import cPickle
+import pickle
 import os
 
 
@@ -53,10 +53,10 @@ class JSSListData(MutableMapping):
         """Make data human readable."""
         # Note: Large lists/objects may take a long time to indent!
         max_key_width = max([len(key) for key in self.store])
-        max_val_width = max([len(unicode(val)) for val in self.store.values()])
+        max_val_width = max([len(str(val)) for val in list(self.store.values())])
         output = []
-        for key, val in self.store.items():
-            output.append(u"{:>{max_key}}: {:>{max_val}}".format(
+        for key, val in list(self.store.items()):
+            output.append("{:>{max_key}}: {:>{max_val}}".format(
                 key, val, max_key=max_key_width, max_val=max_val_width))
         return "\n".join(output).encode("utf-8")
 
@@ -119,8 +119,8 @@ class JSSObjectList(list):
             list_index = "List index"
             if max_key_width < len(list_index):
                 max_key_width = len(list_index)
-            max_val_width = max([len(unicode(val)) for obj in self for val in
-                                obj.values()])
+            max_val_width = max([len(str(val)) for obj in self for val in
+                                list(obj.values())])
             max_width = max_key_width + max_val_width + 2
             delimeter = max_width * "-"
             output = [delimeter]
@@ -128,8 +128,8 @@ class JSSObjectList(list):
                 output.append("{:>{max_key}}: {:>{max_val}}".format(
                     list_index, self.index(obj), max_key=max_key_width,
                     max_val=max_val_width))
-                for key, val in obj.items():
-                    output.append(u"{:>{max_key}}: {:>{max_val}}".format(
+                for key, val in list(obj.items()):
+                    output.append("{:>{max_key}}: {:>{max_val}}".format(
                         key, val, max_key=max_key_width,
                         max_val=max_val_width))
                 output.append(delimeter)
@@ -197,7 +197,7 @@ class JSSObjectList(list):
                 Path will have ~ expanded prior to opening.
         """
         with open(os.path.expanduser(path), "wb") as pickle:
-            cPickle.Pickler(pickle, cPickle.HIGHEST_PROTOCOL).dump(self)
+            pickle.Pickler(pickle, pickle.HIGHEST_PROTOCOL).dump(self)
 
     @classmethod
     def from_pickle(cls, path):
@@ -215,4 +215,4 @@ class JSSObjectList(list):
                 Path will have ~ expanded prior to opening.
         """
         with open(os.path.expanduser(path), "rb") as pickle:
-            return cPickle.Unpickler(pickle).load()
+            return pickle.Unpickler(pickle).load()

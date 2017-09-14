@@ -20,10 +20,10 @@ as JSSObjects.
 """
 
 
-import cPickle
+import pickle
 import os
 import re
-from urllib import quote
+from urllib.parse import quote
 from xml.etree import ElementTree
 
 import requests
@@ -200,7 +200,7 @@ class JSS(object):
         response = self.session.get(request_url)
 
         if response.status_code == 200 and self.verbose:
-            print "GET %s: Success." % request_url
+            print("GET %s: Success." % request_url)
         elif response.status_code >= 400:
             error_handler(JSSGetError, response)
 
@@ -254,7 +254,7 @@ class JSS(object):
         response = self.session.post(request_url, data=data)
 
         if response.status_code == 201 and self.verbose:
-            print "POST %s: Success" % request_url
+            print("POST %s: Success" % request_url)
         elif response.status_code >= 400:
             error_handler(JSSPostError, response)
 
@@ -285,7 +285,7 @@ class JSS(object):
         response = self.session.put(request_url, data)
 
         if response.status_code == 201 and self.verbose:
-            print "PUT %s: Success." % request_url
+            print("PUT %s: Success." % request_url)
         elif response.status_code >= 400:
             error_handler(JSSPutError, response)
 
@@ -309,7 +309,7 @@ class JSS(object):
             response = self.session.delete(request_url)
 
         if response.status_code == 200 and self.verbose:
-            print "DEL %s: Success." % request_url
+            print("DEL %s: Success." % request_url)
         elif response.status_code >= 400:
             error_handler(JSSDeleteError, response)
 
@@ -383,12 +383,12 @@ class JSS(object):
                 except JSSGetError:
                     # A failure to get means the object type has zero
                     # results.
-                    print method[0], " has no results! (GETERRROR)"
+                    print(method[0], " has no results! (GETERRROR)")
                     all_objects[method[0]] = []
         # all_objects = {method[0]: method[1]().retrieve_all()
         #                for method in all_search_methods}
         with open(os.path.expanduser(path), "wb") as pickle:
-            cPickle.Pickler(pickle, cPickle.HIGHEST_PROTOCOL).dump(all_objects)
+            pickle.Pickler(pickle, pickle.HIGHEST_PROTOCOL).dump(all_objects)
 
     def from_pickle(cls, path):
         """Load all objects from pickle file and return as dict.
@@ -410,7 +410,7 @@ class JSS(object):
                 Path will have ~ expanded prior to opening.
         """
         with open(os.path.expanduser(path), "rb") as pickle:
-            return cPickle.Unpickler(pickle).load()
+            return pickle.Unpickler(pickle).load()
 
     def write_all(self, path):
         """Back up entire JSS to XML file.
@@ -442,13 +442,13 @@ class JSS(object):
                 except JSSGetError:
                     # A failure to get means the object type has zero
                     # results.
-                    print method[0], " has no results! (GETERRROR)"
+                    print(method[0], " has no results! (GETERRROR)")
                     all_objects[method[0]] = []
         # all_objects = {method[0]: method[1]().retrieve_all()
         #                for method in all_search_methods}
         with open(os.path.expanduser(path), "w") as ofile:
             root = ElementTree.Element("JSS")
-            for obj_type, objects in all_objects.items():
+            for obj_type, objects in list(all_objects.items()):
                 if objects is not None:
                     sub_element = ElementTree.SubElement(root, obj_type)
                     sub_element.extend(objects)
@@ -866,14 +866,14 @@ class JSSObjectFactory(object):
         """
         if subset:
             if not isinstance(subset, list):
-                if isinstance(subset, basestring):
+                if isinstance(subset, str):
                     subset = subset.split("&")
                 else:
                     raise TypeError
 
         if data is None:
             return self.get_list(obj_class, data, subset)
-        elif isinstance(data, (basestring, int)):
+        elif isinstance(data, (str, int)):
             return self.get_individual_object(obj_class, data, subset)
         elif isinstance(data, ElementTree.Element):
             return self.get_new_object(obj_class, data)

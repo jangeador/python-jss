@@ -39,8 +39,8 @@ except ImportError as err:
     # available, or it won't import.
 
     if is_osx():
-        print "Warning: Import of FoundationPlist failed:", err
-        print "See README for information on this issue."
+        print("Warning: Import of FoundationPlist failed:", err)
+        print("See README for information on this issue.")
     import plistlib
 
 
@@ -173,9 +173,9 @@ class JSSPrefs(object):
         to write.
         """
         root = ElementTree.Element("dict")
-        print ("It seems like you do not have a preferences file configured. "
+        print(("It seems like you do not have a preferences file configured. "
                "Please answer the following questions to generate a plist at "
-               "%s for use with python-jss." % self.preferences_file)
+               "%s for use with python-jss." % self.preferences_file))
 
         self.url = _get_user_input(
             "The complete URL to your JSS, with port (e.g. "
@@ -194,7 +194,7 @@ class JSSPrefs(object):
         self._handle_repos(root)
 
         self._write_plist(root)
-        print "Preferences created.\n"
+        print("Preferences created.\n")
 
     def _handle_repos(self, root):
         """Handle repo configuration."""
@@ -204,7 +204,7 @@ class JSSPrefs(object):
         # Make a temporary jss object to try to pull repo information.
         jss_server = JSS(url=self.url, user=self.user, password=self.password,
                          ssl_verify=self.verify, suppress_warnings=True)
-        print "Fetching distribution point info..."
+        print("Fetching distribution point info...")
         try:
             dpts = jss_server.DistributionPoint()
         except JSSGetError:
