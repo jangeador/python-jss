@@ -2,7 +2,8 @@
 
 from setuptools import setup, find_packages
 
-from jss import __version__
+#from jss import __version__
+__version__ = "1.5.0"
 
 #http://stackoverflow.com/questions/10718767/have-the-same-readme-both-in-markdown-and-restructuredtext
 try:
