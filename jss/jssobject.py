@@ -130,6 +130,7 @@ class JSSObject(ElementTree.Element):
     search_types = {"name": "/name/"}
     list_type = "JSSObject"
     data_keys = {}
+    _children = []
 
     def __init__(self, jss, data, **kwargs):
         """Initialize a new JSSObject
