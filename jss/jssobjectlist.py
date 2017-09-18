@@ -56,6 +56,8 @@ class JSSListData(MutableMapping):
         max_val_width = max([len(str(val)) for val in list(self.store.values())])
         output = []
         for key, val in list(self.store.items()):
+            if not val:
+                continue
             output.append("{:>{max_key}}: {:>{max_val}}".format(
                 key, val, max_key=max_key_width, max_val=max_val_width))
         return "\n".join(output)

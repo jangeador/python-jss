@@ -143,10 +143,10 @@ class JSSObject(ElementTree.Element):
         """
         self.jss = jss
         if isinstance(data, str):
-            super(JSSObject, self).__init__(tag=self.list_type)
+            super(JSSObject, self).__init__(self.list_type)
             self._new(data, **kwargs)
         elif isinstance(data, ElementTree.Element):
-            super(JSSObject, self).__init__(tag=data.tag)
+            super(JSSObject, self).__init__(data.tag)
             for child in data.getchildren():
                 self.append(child)
         else:
