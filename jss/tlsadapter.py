@@ -65,7 +65,7 @@ CIPHER_LIST = ":".join(["ECDHE-RSA-AES256-GCM-SHA384",
                         "!MD5",
                         "!PSK"])
 
-
+# changes to tls 1.2
 class TLSAdapter(HTTPAdapter):
     """Transport adapter that uses TLS vs. default of SSLv23."""
 
